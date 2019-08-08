@@ -1,0 +1,36 @@
+body {
+    background-color: beige;
+}
+
+input,
+button {
+    padding: 5px;
+}
+
+input {
+    width: 250px;
+}
+
+p {
+    font-size: 24px;
+}
+
+#factors {
+    margin-top: 24px;
+    margin-bottom: 30px;
+}
+
+.factor {
+    display: inline-block;
+    font-size: 24px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.factor:first-child {
+    margin-right: 20px;
+}
+
+.factor.prime {
+    color: blue;
+    font-weight: bold;
+}
