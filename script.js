@@ -1,82 +1,93 @@
-var numberInput = document.getElementById("number");
-var findFactorsButton = document.getElementById("findFactors");
-var factorsDiv = document.getElementById("factors");
+let number = document.getElementById(`number`)
+let factorButton = document.getElementById(`factorButton`)
+let box = document.getElementById(`box`)
 
-numberInput.addEventListener("keydown", numberInputKeydown);
-findFactorsButton.addEventListener("click", findFactors);
+factorButton.addEventListener(`click`, findFactors)
 
-numberInput.focus();
-
-function numberInputKeydown(event) {
-    if (event.keyCode == 13) {
-        findFactors();
-    }
-}
+number.addEventListener(`keydown`, keyPressed)
+number.focus()
 
 function findFactors() {
-    var number = parseInt(numberInput.value.trim(), 10);
+  let numberValue = number.value.trim()
 
-    if (!isNaN(number)) {
-        factorsDiv.innerHTML = "";
+  if (numberValue != `` && !isNaN(numberValue)) {
+    if (numberValue < 2) {
+      box.innerHTML = `Number must be at least 2.`
+    }
+    else if (numberValue != Math.floor(numberValue)) {
+      box.innerHTML = `Number must be an integer.`
+    }
+    else {
+      box.innerHTML = ``
+      let round = 0
+      let previousFactorDiv
+      let hasFactors = true
 
-        if (number >= 2) {
-            var hasPrimeFactors = showPrimeFactors(number, 0);
+      while (hasFactors) {
+        let otherFactorDiv = makeRow(numberValue, round)
 
-            if (!hasPrimeFactors) {
-                var primeMessage = document.createElement("p");
-                primeMessage.innerHTML = number + " is prime.";
-                factorsDiv.appendChild(primeMessage);
-            }
+        if (otherFactorDiv == null) {
+          if (round == 0) {
+            box.innerHTML = `${numberValue} is prime.`
+          }
+          else {
+            labelPrime(previousFactorDiv)
+          }
+
+          hasFactors = false
         }
         else {
-            var invalidNumberMessage = document.createElement("p");
-            invalidNumberMessage.innerHTML = "Number must be at least 2.";
-            factorsDiv.appendChild(invalidNumberMessage);
+          numberValue = otherFactorDiv.innerHTML
+          round++
+          previousFactorDiv = otherFactorDiv
         }
+      }
     }
+  }
+
+  number.focus()
 }
 
-function showPrimeFactors(number, round) {
-    var sqrtNumber = Math.sqrt(number);
+function makeRow(number, round) {
+  for (let i = 2; i * i <= number; i++) {
+    if (number % i == 0) {
+      let row = makeRowDiv(round)
 
-    for (var i = 2; i <= sqrtNumber; i++) {
-        if (number % i == 0) {
-            var factorRowDiv = createFactorRowDiv(round);
+      let primeFactorDiv = makeFactorDiv(row, i)
+      labelPrime(primeFactorDiv)
 
-            var factorDiv = createFactorDiv(i, factorRowDiv);
-            labelPrime(factorDiv);
+      let otherFactorDiv = makeFactorDiv(row, number / i)
 
-            factorDiv = createFactorDiv(number / i, factorRowDiv);
-            var hasPrimeFactors = showPrimeFactors(number / i, round + 1);
-
-            if (!hasPrimeFactors) {
-                labelPrime(factorDiv);
-            }
-
-            return true;
-        }
+      return otherFactorDiv
     }
+  }
 
-    return false;
+  return null
 }
 
-function createFactorRowDiv(round) {
-    var factorRowDiv = document.createElement("div");
-    factorRowDiv.style.marginLeft = (round * 20) + "px";
-    factorsDiv.appendChild(factorRowDiv);
+function makeRowDiv(round) {
+  let row = document.createElement(`div`)
+  row.style.marginLeft = `${round * 20}px`
+  box.appendChild(row)
 
-    return factorRowDiv;
+  return row
 }
 
-function createFactorDiv(number, factorRowDiv) {
-    var factorDiv = document.createElement("div");
-    factorDiv.classList.add("factor");
-    factorDiv.innerHTML = number;
-    factorRowDiv.appendChild(factorDiv);
+function makeFactorDiv(row, number) {
+  let factorDiv = document.createElement(`div`)
+  factorDiv.classList.add(`factor`)
+  factorDiv.innerHTML = number
+  row.appendChild(factorDiv)
 
-    return factorDiv;
+  return factorDiv
 }
 
 function labelPrime(factorDiv) {
-    factorDiv.classList.add("prime");
+  factorDiv.classList.add(`prime`)
+}
+
+function keyPressed(event) {
+  if (event.keyCode == 13) {
+    findFactors()
+  }
 }
