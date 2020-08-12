@@ -2,15 +2,17 @@ let number = document.getElementById(`number`)
 let factorButton = document.getElementById(`factorButton`)
 let box = document.getElementById(`box`)
 
-factorButton.addEventListener(`click`, findFactors)
+let finding = false
+
+factorButton.addEventListener(`click`, startFindFactors)
 
 number.addEventListener(`keydown`, keyPressed)
 number.focus()
 
-function findFactors() {
+function startFindFactors() {
   let numberValue = number.value.trim()
 
-  if (numberValue != `` && !isNaN(numberValue)) {
+  if (numberValue != `` && !isNaN(numberValue) && !finding) {
     if (numberValue < 2) {
       box.innerHTML = `Number must be at least 2.`
     }
@@ -18,34 +20,42 @@ function findFactors() {
       box.innerHTML = `Number must be an integer.`
     }
     else {
-      box.innerHTML = ``
-      let round = 0
-      let previousFactorDiv
-      let hasFactors = true
+      box.innerHTML = `Finding all prime factors...`
+      finding = true
 
-      while (hasFactors) {
-        let otherFactorDiv = makeRow(numberValue, round)
-
-        if (otherFactorDiv == null) {
-          if (round == 0) {
-            box.innerHTML = `${numberValue} is prime.`
-          }
-          else {
-            labelPrime(previousFactorDiv)
-          }
-
-          hasFactors = false
-        }
-        else {
-          numberValue = otherFactorDiv.innerHTML
-          round++
-          previousFactorDiv = otherFactorDiv
-        }
-      }
+      setTimeout(findFactors, 10, numberValue)
     }
   }
 
   number.focus()
+}
+
+function findFactors(numberValue) {
+  let round = 0
+  let previousFactorDiv
+  let hasFactors = true
+
+  while (hasFactors) {
+    let otherFactorDiv = makeRow(numberValue, round)
+
+    if (otherFactorDiv == null) {
+      if (round == 0) {
+        box.innerHTML = `${numberValue} is prime.`
+      }
+      else {
+        labelPrime(previousFactorDiv)
+      }
+
+      hasFactors = false
+    }
+    else {
+      numberValue = otherFactorDiv.innerHTML
+      round++
+      previousFactorDiv = otherFactorDiv
+    }
+  }
+
+  finding = false
 }
 
 function makeRow(number, round) {
@@ -66,7 +76,12 @@ function makeRow(number, round) {
 }
 
 function makeRowDiv(round) {
+  if (round == 0) {
+    box.innerHTML = ``
+  }
+
   let row = document.createElement(`div`)
+  row.classList.add(`row`)
   row.style.marginLeft = `${round * 20}px`
   box.appendChild(row)
 
@@ -88,6 +103,6 @@ function labelPrime(factorDiv) {
 
 function keyPressed(event) {
   if (event.keyCode == 13) {
-    findFactors()
+    startFindFactors()
   }
 }
