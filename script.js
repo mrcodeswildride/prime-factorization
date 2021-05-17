@@ -12,22 +12,18 @@ number.focus()
 function startFindFactors() {
   let numberValue = number.value.trim()
 
-  if (numberValue != `` && !isNaN(numberValue) && !finding) {
+  if (!finding) {
     if (numberValue < 2) {
       box.innerHTML = `Number must be at least 2.`
-    }
-    else if (numberValue != Math.floor(numberValue)) {
+    } else if (numberValue != Math.floor(numberValue)) {
       box.innerHTML = `Number must be an integer.`
-    }
-    else {
+    } else {
       box.innerHTML = `Finding all prime factors...`
       finding = true
 
       setTimeout(findFactors, 10, numberValue)
     }
   }
-
-  number.focus()
 }
 
 function findFactors(numberValue) {
@@ -41,14 +37,12 @@ function findFactors(numberValue) {
     if (otherFactorDiv == null) {
       if (round == 0) {
         box.innerHTML = `${numberValue} is prime.`
-      }
-      else {
+      } else {
         labelPrime(previousFactorDiv)
       }
 
       hasFactors = false
-    }
-    else {
+    } else {
       numberValue = otherFactorDiv.innerHTML
       round++
       previousFactorDiv = otherFactorDiv
